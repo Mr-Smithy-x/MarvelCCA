@@ -18,7 +18,17 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "nyc.charlton.marvel.CustomTestRunner"
+
+        Properties properties = new Properties()
+        properties.load(new FileInputStream(project.rootProject.file("keys.properties")))
+
+        buildConfigField "String", "MARVEL_PK", "\"${properties.getProperty("marvel_public")}\""
+        buildConfigField "String", "MARVEL_SK", "\"${properties.getProperty("marvel_private")}\""
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     buildTypes {
@@ -34,6 +44,7 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
 }
 
 dependencies {
@@ -45,40 +56,26 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
+    implementation 'com.google.code.gson:gson:2.9.0'
+    testImplementation 'com.google.code.gson:gson:2.9.0'
+    androidTestImplementation 'com.google.code.gson:gson:2.9.0'
+
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.preference:preference-ktx:1.2.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'org.nanohttpd:nanohttpd:2.3.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    def navigation = "2.5.1"
-
-    implementation "androidx.navigation:navigation-testing:$navigation"
-    implementation "androidx.navigation:navigation-ui:$navigation"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
-    implementation "androidx.navigation:navigation-fragment:$navigation"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
-
-    implementation "commons-net:commons-net:3.6"
-
-    implementation 'com.google.code.gson:gson:2.9.0'
-
-    kapt 'com.github.bumptech.glide:compiler:4.13.2'
-    implementation 'com.github.bumptech.glide:glide:4.13.2'
-    implementation 'com.github.bumptech.glide:okhttp3-integration:4.13.2'
-
-    implementation 'org.jsoup:jsoup:1.15.2'
-    implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'javax.inject:javax.inject:1'
-    implementation 'net.danlew:android.joda:2.11.0'
+    implementation 'androidx.test.ext:junit-ktx:1.1.3'
 
     kapt 'androidx.room:room-compiler:2.4.3'
     annotationProcessor 'androidx.room:room-compiler:2.4.3'
     implementation("androidx.room:room-runtime:2.4.3")
     implementation 'androidx.room:room-ktx:2.4.3'
 
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    kapt 'com.github.bumptech.glide:compiler:4.13.2'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.13.2'
+
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
     implementation "com.squareup.retrofit2:retrofit-converters:2.8.1"

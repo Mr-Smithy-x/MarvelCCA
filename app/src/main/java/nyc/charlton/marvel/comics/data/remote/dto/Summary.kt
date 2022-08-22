@@ -1,5 +1,7 @@
 package nyc.charlton.marvel.comics.data.remote.dto
 
+import androidx.room.Entity
+
 sealed class Summary(
     val resourceURI: String,
     val name: String

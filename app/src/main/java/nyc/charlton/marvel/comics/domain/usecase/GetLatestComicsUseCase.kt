@@ -7,7 +7,7 @@ import nyc.charlton.marvel.comics.domain.model.Comic
 import nyc.charlton.marvel.common.Resource
 import javax.inject.Inject
 
-class GetComicsUseCase @Inject constructor(
+class GetLatestComicsUseCase @Inject constructor(
     private val repository: ComicRepository
 ) {
     operator fun invoke(): Flow<Resource<List<Comic>>> = flow {

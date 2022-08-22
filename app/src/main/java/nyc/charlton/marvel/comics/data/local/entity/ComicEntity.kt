@@ -1,12 +1,13 @@
-package nyc.charlton.marvel.comics.data.remote.dto
+package nyc.charlton.marvel.comics.data.local.entity
 
+import androidx.room.Entity
 import androidx.room.PrimaryKey
-import nyc.charlton.marvel.comics.data.local.entity.ComicEntity
+import nyc.charlton.marvel.comics.data.remote.dto.*
 import nyc.charlton.marvel.comics.domain.model.Comic
 
-
-data class ComicDTO (
-    val id: Int, // (int, optional): The unique ID of the comic resource.,
+@Entity
+data class ComicEntity (
+    @PrimaryKey val id: Int, // (int, optional): The unique ID of the comic resource.,
     val digitalId: Int, // (int, optional): The ID of the digital comic representation of this comic. Will be 0 if the comic is not available digitally.,
     val title: String, // (string, optional): The canonical title of the comic.,
     val issueNumber: Double, // (double, optional): The number of the issue in the series (will generally be 0 for collection formats).,
@@ -38,41 +39,7 @@ data class ComicDTO (
 ) {
 }
 
-fun ComicDTO.toComicEntity(): ComicEntity {
-    return ComicEntity(
-        id = id,
-        digitalId = digitalId,
-        title = title,
-        issueNumber = issueNumber,
-        variantDescription = variantDescription,
-        description = description,
-        modified = modified,
-        isbn = isbn,
-        upc = upc,
-        diamondCode = diamondCode,
-        ean = ean,
-        issn = issn,
-        format = format,
-        pageCount = pageCount,
-        textObjects = textObjects,
-        resourceURI = resourceURI,
-        urls = urls,
-        series = series,
-        variants = variants,
-        collections = collections,
-        collectedIssues = collectedIssues,
-        dates = dates,
-        prices = prices,
-        thumbnail = thumbnail,
-        images = images,
-        creators = creators,
-        characters = characters,
-        stories = stories,
-        events = events
-    )
-}
-
-fun ComicDTO.toComic(): Comic {
+fun ComicEntity.toComic(): Comic {
     return Comic(
         id = id,
         digitalId = digitalId,
@@ -92,3 +59,4 @@ fun ComicDTO.toComic(): Comic {
         thumbnail = thumbnail
     )
 }
+

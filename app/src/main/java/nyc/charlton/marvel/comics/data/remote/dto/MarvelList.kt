@@ -1,6 +1,6 @@
 package nyc.charlton.marvel.comics.data.remote.dto
 
-sealed class List<T>(
+sealed class MarvelList<T>(
     val available: Int,
     val returned: Int,
     val collectionURI: String,
@@ -12,27 +12,27 @@ sealed class List<T>(
         returned: Int,
         collectionURI: String,
         items: Array<Summary.Character>
-    ): List<Summary.Character>(available, returned, collectionURI, items)
+    ): MarvelList<Summary.Character>(available, returned, collectionURI, items)
 
     class Creator(
         available: Int,
         returned: Int,
         collectionURI: String,
         items: Array<Summary.Creator>
-    ): List<Summary.Creator>(available, returned, collectionURI, items)
+    ): MarvelList<Summary.Creator>(available, returned, collectionURI, items)
 
     class Story(
         available: Int,
         returned: Int,
         collectionURI: String,
         items: Array<Summary.Story>
-    ): List<Summary.Story>(available, returned, collectionURI, items)
+    ): MarvelList<Summary.Story>(available, returned, collectionURI, items)
 
     class Event(
         available: Int,
         returned: Int,
         collectionURI: String,
         items: Array<Summary.Event>
-    ): List<Summary.Event>(available, returned, collectionURI, items)
+    ): MarvelList<Summary.Event>(available, returned, collectionURI, items)
 
 }
