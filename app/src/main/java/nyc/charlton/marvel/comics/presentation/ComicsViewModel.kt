@@ -18,11 +18,11 @@ class ComicsViewModel @Inject constructor(
     private val searchComicsUseCase: SearchComicsUseCase
 ) : ViewModel() {
 
-    private val _newThisMonth = MutableLiveData<ComicsState?>()
-    val newThisMonth: LiveData<ComicsState?> get() = _newThisMonth
+    private val _newThisMonth = MutableLiveData<ComicsState>()
+    val newThisMonth: LiveData<ComicsState> get() = _newThisMonth
 
-    private val _latestComic = MutableLiveData<ComicsState?>(null)
-    val latestComics: LiveData<ComicsState?> get() = _latestComic
+    private val _latestComic = MutableLiveData<ComicsState>(null)
+    val latestComics: LiveData<ComicsState> get() = _latestComic
 
     init {
         getComics()
@@ -33,14 +33,13 @@ class ComicsViewModel @Inject constructor(
         newThisMonthUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _newThisMonth.postValue(ComicsState(false, result.data ?: emptyList()))
+                    _newThisMonth.value = ComicsState(false, result.data ?: emptyList())
                 }
                 is Resource.Error -> {
-                    _newThisMonth.postValue(
-                        ComicsState(error = result.status ?: "An unexpected error occurred"))
+                    _newThisMonth.value = ComicsState(error = result.status ?: "An unexpected error occurred")
                 }
                 is Resource.Loading -> {
-                    _newThisMonth.postValue(ComicsState(loading = true))
+                    _newThisMonth.value = ComicsState(loading = true)
                 }
             }
         }.launchIn(viewModelScope)
@@ -50,13 +49,13 @@ class ComicsViewModel @Inject constructor(
         latestComicsUseCase().onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _latestComic.postValue(ComicsState(false, result.data ?: emptyList()))
+                    _latestComic.value = ComicsState(false, result.data ?: emptyList())
                 }
                 is Resource.Error -> {
-                    _latestComic.postValue(ComicsState(error = result.status ?: "An unexpected error occurred"))
+                    _latestComic.value = ComicsState(error = result.status ?: "An unexpected error occurred")
                 }
                 is Resource.Loading -> {
-                    _latestComic.postValue(ComicsState(loading = true))
+                    _latestComic.value = ComicsState(loading = true)
                 }
             }
         }.launchIn(viewModelScope)
@@ -66,15 +65,15 @@ class ComicsViewModel @Inject constructor(
         searchComicsUseCase(search).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    _newThisMonth.postValue(ComicsState(false, result.data ?: emptyList()))
+                    _newThisMonth.value = ComicsState(false, result.data ?: emptyList())
                 }
                 is Resource.Error -> {
-                    _newThisMonth.postValue(ComicsState(
+                    _newThisMonth.value = ComicsState(
                         error = result.status ?: "An unexpected error occurred"
-                    ))
+                    )
                 }
                 is Resource.Loading -> {
-                    _newThisMonth.postValue(ComicsState(loading = true))
+                    _newThisMonth.value = ComicsState(loading = true)
                 }
             }
         }.launchIn(viewModelScope)

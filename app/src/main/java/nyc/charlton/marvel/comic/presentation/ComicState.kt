@@ -6,6 +6,4 @@ data class ComicState(
     val loading: Boolean = false,
     val comic: Comic? = null,
     val error: String = ""
-) {
-
-}
+)

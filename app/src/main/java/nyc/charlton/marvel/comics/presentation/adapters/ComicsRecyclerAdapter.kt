@@ -16,7 +16,7 @@ import nyc.charlton.marvel.comics.presentation.ComicsState
 
 class ComicsRecyclerAdapter(
     lifecycleOwner: LifecycleOwner,
-    liveData: LiveData<ComicsState?>,
+    liveData: LiveData<ComicsState>,
     val viewType: Int = VIEW_TYPE_ROW
 ) :
     RecyclerView.Adapter<ComicsRecyclerAdapter.ComicViewHolder>() {

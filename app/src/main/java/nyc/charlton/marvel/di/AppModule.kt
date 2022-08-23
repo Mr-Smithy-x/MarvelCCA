@@ -1,7 +1,6 @@
 package nyc.charlton.marvel.di
 
 import android.app.Application
-import android.content.Context
 import android.os.Environment
 import androidx.room.Room
 import com.google.gson.Gson
@@ -9,8 +8,8 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import nyc.charlton.marvel.BuildConfig
 import nyc.charlton.marvel.comics.data.local.ComicDataSource
 import nyc.charlton.marvel.comics.data.local.converters.Converters
 import nyc.charlton.marvel.comics.data.remote.ComicApi
@@ -31,13 +30,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private val LOG get() = true
+    private val LOG get() = BuildConfig.DEBUG
 
     @AuthInterceptorOkHttpClient
     @Provides
-    fun provideAuthInterceptor(
-        @ApplicationContext context: Context
-    ): OkHttpClient {
+    fun provideAuthInterceptor(): OkHttpClient {
         val builder = OkHttpClient.Builder()
             .addInterceptor(MarvelInteceptor())
             .connectTimeout(15, TimeUnit.SECONDS)

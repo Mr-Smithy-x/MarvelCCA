@@ -35,48 +35,6 @@ import javax.inject.Singleton
     )
 object AppModuleTest {
 
-    private val LOG get() = true
-
-    @AuthInterceptorOkHttpClient
-    @Provides
-    fun provideAuthInterceptor(
-        @ApplicationContext context: Context
-    ): OkHttpClient {
-        val builder = OkHttpClient.Builder()
-            .addInterceptor(MarvelInterceptorTest())
-            .connectTimeout(15, TimeUnit.SECONDS)
-            .readTimeout(15, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
-            .cache(Cache(Environment.getDownloadCacheDirectory(), (20 * 1024 * 1024).toLong()))
-        if (LOG) {
-            builder.addInterceptor(HttpLoggingInterceptor().also {
-                it.level = HttpLoggingInterceptor.Level.HEADERS
-            }).addInterceptor(HttpLoggingInterceptor().also {
-                it.level = HttpLoggingInterceptor.Level.BODY
-            })
-        }
-        return builder.build()
-    }
-
-    @Provides
-    @AuthRetrofitClient
-    fun provideAuthenticatedRetrofit(
-        @AuthInterceptorOkHttpClient okHttpClient: OkHttpClient
-    ): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(
-                GsonConverterFactory.create(
-                    GsonBuilder()
-                        .setLenient()
-                        .setDateFormat("yyyy-MM-dd HH:mm:ss")
-                        .create()
-                )
-            )
-            .client(okHttpClient)
-            .build()
-    }
-
     @Provides
     @Singleton
     fun providesComicApi(@ApplicationContext context: Context): ComicApi {
@@ -96,16 +54,22 @@ object AppModuleTest {
                 return fromJson
             }
 
+            override suspend fun searchComics(query: String): Resource<DataContainer<ComicDTO>> {
+                val results = fromJson.data?.results?.filter {
+                    it.title.contains(query, true) || it.description?.contains(query, true) == true || it.variantDescription?.contains(
+                        query, true
+                    ) == true
+                }?: emptyList()
+                return Resource.Success(DataContainer(0, 20, results.size, results.size, results))
+            }
+
         }
     }
 
 
     @Provides
     @Singleton
-    fun providesComicDao(@ApplicationContext context: Context): ComicDao {
-        val open = context.assets.open("v1/public/comics/200.json").bufferedReader().readText()
-        val token = object: TypeToken<Resource<DataContainer<ComicDTO>>>() {}.type
-        val fromJson: Resource<DataContainer<ComicDTO>> = GsonBuilder().create().fromJson(open, token)
+    fun providesComicDao(): ComicDao {
         return object: ComicDao {
 
             private val data = ArrayList<ComicEntity>()
