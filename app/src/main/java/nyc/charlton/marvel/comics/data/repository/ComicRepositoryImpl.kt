@@ -91,6 +91,7 @@ class ComicRepositoryImpl @Inject constructor(
     }
 
     override suspend fun searchComics(query: String): Resource<List<Comic>> {
+        val comicsFromDao = dao.getComics(query)
         return try {
             val comics = api.searchComics(query)
 
@@ -99,22 +100,23 @@ class ComicRepositoryImpl @Inject constructor(
                 it.toComic()
             }
             if (list?.isEmpty() == true) {
-                Resource.Success(dao.getComics(query).map { it.toComic() } ?: emptyList())
+                Resource.Success(comicsFromDao.map { it.toComic() })
             }else {
-                Resource.Success(list ?: emptyList())
+                val li = list!!.toMutableList().apply {
+                    addAll(comicsFromDao.map { it.toComic() })
+                }.distinctBy { it.id }
+                Resource.Success(li)
             }
         } catch (e: HttpException) {
-            val comics = dao.getComics(query)
-            if (comics.isNotEmpty()) {
-                return Resource.Success(comics.map {
+            if (comicsFromDao.isNotEmpty()) {
+                return Resource.Success(comicsFromDao.map {
                     it.toComic()
                 })
             }
             Resource.Error(e.localizedMessage ?: "Unexpected error occurred")
         } catch (e: IOException) {
-            val comics = dao.getComics(query)
-            if (comics.isNotEmpty()) {
-                return Resource.Success(comics.map {
+            if (comicsFromDao.isNotEmpty()) {
+                return Resource.Success(comicsFromDao.map {
                     it.toComic()
                 })
             }
