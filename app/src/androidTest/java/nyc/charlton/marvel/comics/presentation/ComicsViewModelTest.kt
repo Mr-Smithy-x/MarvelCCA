@@ -5,6 +5,7 @@ import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import nyc.charlton.marvel.comics.domain.usecase.GetComicsUseCase
 import nyc.charlton.marvel.comics.domain.usecase.GetLatestComicsUseCase
+import nyc.charlton.marvel.comics.domain.usecase.SearchComicsUseCase
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -26,13 +27,17 @@ class ComicsViewModelTest {
 
     @Inject
     lateinit var getLatestComicsUseCase: GetLatestComicsUseCase
+
+
+    @Inject
+    lateinit var searchComicsUseCase: SearchComicsUseCase
     //@get: Rule
     //var rule: TestRule = InstantTaskExecutorRule()
 
     @Before
     fun setup() {
         rule.inject()
-        vm = ComicsViewModel(getComicsUseCaseTest, getLatestComicsUseCase)
+        vm = ComicsViewModel(getComicsUseCaseTest, getLatestComicsUseCase, searchComicsUseCase)
     }
 
     @Test

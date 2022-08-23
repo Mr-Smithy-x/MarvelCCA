@@ -11,4 +11,6 @@ interface ComicRepository {
 
     suspend fun getLatestComics(): Resource<List<Comic>>
 
+    suspend fun searchComics(query: String): Resource<List<Comic>>
+
 }

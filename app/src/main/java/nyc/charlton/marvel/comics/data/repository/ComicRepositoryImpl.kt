@@ -25,7 +25,7 @@ class ComicRepositoryImpl @Inject constructor(
             } ?: emptyList())
         } catch (e: HttpException) {
             val comics = dao.getComics("")
-            if(comics.isNotEmpty()){
+            if (comics.isNotEmpty()) {
                 return Resource.Success(comics.map {
                     it.toComic()
                 })
@@ -33,7 +33,7 @@ class ComicRepositoryImpl @Inject constructor(
             Resource.Error(e.localizedMessage ?: "Unexpected error occurred")
         } catch (e: IOException) {
             val comics = dao.getComics("")
-            if(comics.isNotEmpty()){
+            if (comics.isNotEmpty()) {
                 return Resource.Success(comics.map {
                     it.toComic()
                 })
@@ -73,7 +73,7 @@ class ComicRepositoryImpl @Inject constructor(
             } ?: emptyList())
         } catch (e: HttpException) {
             val comics = dao.getComics("")
-            if(comics.isNotEmpty()){
+            if (comics.isNotEmpty()) {
                 return Resource.Success(comics.map {
                     it.toComic()
                 })
@@ -81,7 +81,39 @@ class ComicRepositoryImpl @Inject constructor(
             Resource.Error(e.localizedMessage ?: "Unexpected error occurred")
         } catch (e: IOException) {
             val comics = dao.getComics("")
-            if(comics.isNotEmpty()){
+            if (comics.isNotEmpty()) {
+                return Resource.Success(comics.map {
+                    it.toComic()
+                })
+            }
+            Resource.Error("Couldn't reach server")
+        }
+    }
+
+    override suspend fun searchComics(query: String): Resource<List<Comic>> {
+        return try {
+            val comics = api.searchComics(query)
+
+            val list: List<Comic>? = comics.data?.results?.map {
+                dao.insert(it.toComicEntity())
+                it.toComic()
+            }
+            if (list?.isEmpty() == true) {
+                Resource.Success(dao.getComics(query).map { it.toComic() } ?: emptyList())
+            }else {
+                Resource.Success(list ?: emptyList())
+            }
+        } catch (e: HttpException) {
+            val comics = dao.getComics(query)
+            if (comics.isNotEmpty()) {
+                return Resource.Success(comics.map {
+                    it.toComic()
+                })
+            }
+            Resource.Error(e.localizedMessage ?: "Unexpected error occurred")
+        } catch (e: IOException) {
+            val comics = dao.getComics(query)
+            if (comics.isNotEmpty()) {
                 return Resource.Success(comics.map {
                     it.toComic()
                 })
