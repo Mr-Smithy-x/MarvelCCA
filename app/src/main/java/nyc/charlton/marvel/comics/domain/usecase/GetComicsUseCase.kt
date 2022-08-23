@@ -12,7 +12,7 @@ class GetComicsUseCase @Inject constructor(
 ) {
     operator fun invoke(): Flow<Resource<List<Comic>>> = flow {
         emit(Resource.Loading())
-        val comics = repository.getLatestComics()
+        val comics = repository.getComics()
         emit(comics) // comics could be of type success or error at this point
     }
 }

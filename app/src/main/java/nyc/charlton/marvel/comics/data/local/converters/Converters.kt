@@ -41,6 +41,20 @@ class Converters(private val gson: Gson) {
 
 
     @TypeConverter
+    fun fromJsonToSummarySerie(
+        json: String
+    ): Summary.Series {
+        val token = object: TypeToken<Summary.Series>() {}.type
+        val fromJson: Summary.Series = gson.fromJson(json, token)
+        return fromJson
+    }
+
+    @TypeConverter
+    fun fromSummarySerieToJson(series: Summary.Series): String {
+        return gson.toJson(series)
+    }
+
+    @TypeConverter
     fun fromJsonToSummarySeries(
         json: String
     ): List<Summary.Series> {

@@ -7,19 +7,19 @@ import nyc.charlton.marvel.comics.data.local.entity.ComicEntity
 interface ComicDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(comics: List<ComicEntity>)
+    suspend fun insert(comics: List<ComicEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(comics: ComicEntity)
+    suspend fun insert(comics: ComicEntity)
 
     @Delete
-    fun delete(comic: ComicEntity)
+    suspend fun delete(comic: ComicEntity)
 
     @Query("SELECT * FROM ComicEntity WHERE title LIKE '%' || :query || '%' OR description LIKE '%' || :query || '%'")
-    fun getComics(query: String): List<ComicEntity>
+    suspend fun getComics(query: String): List<ComicEntity>
 
     @Query("SELECT * FROM ComicEntity WHERE id = :id")
-    fun getComic(id: Int): ComicEntity?
+    suspend fun getComic(id: Int): ComicEntity?
 
 
 }
