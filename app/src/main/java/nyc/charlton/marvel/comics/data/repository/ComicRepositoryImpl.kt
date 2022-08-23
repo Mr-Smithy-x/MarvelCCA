@@ -24,8 +24,20 @@ class ComicRepositoryImpl @Inject constructor(
                 it.toComic()
             } ?: emptyList())
         } catch (e: HttpException) {
+            val comics = dao.getComics("")
+            if(comics.isNotEmpty()){
+                return Resource.Success(comics.map {
+                    it.toComic()
+                })
+            }
             Resource.Error(e.localizedMessage ?: "Unexpected error occurred")
         } catch (e: IOException) {
+            val comics = dao.getComics("")
+            if(comics.isNotEmpty()){
+                return Resource.Success(comics.map {
+                    it.toComic()
+                })
+            }
             Resource.Error("Couldn't reach server")
         }
     }
@@ -60,8 +72,20 @@ class ComicRepositoryImpl @Inject constructor(
                 it.toComic()
             } ?: emptyList())
         } catch (e: HttpException) {
+            val comics = dao.getComics("")
+            if(comics.isNotEmpty()){
+                return Resource.Success(comics.map {
+                    it.toComic()
+                })
+            }
             Resource.Error(e.localizedMessage ?: "Unexpected error occurred")
         } catch (e: IOException) {
+            val comics = dao.getComics("")
+            if(comics.isNotEmpty()){
+                return Resource.Success(comics.map {
+                    it.toComic()
+                })
+            }
             Resource.Error("Couldn't reach server")
         }
     }
