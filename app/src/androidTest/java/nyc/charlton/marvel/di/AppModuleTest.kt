@@ -9,6 +9,8 @@ import dagger.Provides
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dagger.hilt.testing.TestInstallIn
+import nyc.charlton.marvel.comics.data.local.ComicDao
+import nyc.charlton.marvel.comics.data.local.entity.ComicEntity
 import nyc.charlton.marvel.comics.data.remote.ComicApi
 import nyc.charlton.marvel.comics.data.remote.dto.ComicDTO
 import nyc.charlton.marvel.comics.domain.repository.ComicRepository
@@ -97,9 +99,43 @@ object AppModuleTest {
         }
     }
 
+
     @Provides
     @Singleton
-    fun provideComicApi(api: ComicApi): ComicRepository {
-        return ComicRepositoryImpl(api)
+    fun providesComicDao(@ApplicationContext context: Context): ComicDao {
+        val open = context.assets.open("v1/public/comics/200.json").bufferedReader().readText()
+        val token = object: TypeToken<Resource<DataContainer<ComicDTO>>>() {}.type
+        val fromJson: Resource<DataContainer<ComicDTO>> = GsonBuilder().create().fromJson(open, token)
+        return object: ComicDao {
+
+            private val data = ArrayList<ComicEntity>()
+
+            override suspend fun insert(comics: List<ComicEntity>) {
+                data.addAll(comics)
+            }
+
+            override suspend fun insert(comics: ComicEntity) {
+                data.add(comics)
+            }
+
+            override suspend fun delete(comic: ComicEntity) {
+                data.removeIf { it.id == comic.id }
+            }
+
+            override suspend fun getComics(query: String): List<ComicEntity> {
+                return data
+            }
+
+            override suspend fun getComic(id: Int): ComicEntity? {
+                return data.find { it.id == id }
+            }
+
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideComicApi(api: ComicApi, dao: ComicDao): ComicRepository {
+        return ComicRepositoryImpl(api, dao)
     }
 }

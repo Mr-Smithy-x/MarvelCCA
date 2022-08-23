@@ -37,8 +37,10 @@ class ComicRepositoryImpl @Inject constructor(
                 return Resource.Success(comic.toComic())
             }
             val comics = api.getComic(comicId)
-            val comicEntity = comics.data?.results?.get(0)?.toComicEntity()
+            val results = comics.data?.results
+            val comicEntity = results?.find { it.id == comicId }?.toComicEntity()
             if (comicEntity != null) {
+                dao.insert(comicEntity)
                 return Resource.Success(comicEntity.toComic())
             } else {
                 return Resource.Error("Comic not found")

@@ -11,9 +11,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ComicViewModel @Inject constructor(
-    application: Application,
     private val comicsUseCase: GetComicUseCase
-): AndroidViewModel(application) {
+): ViewModel() {
 
     private val _vm = MutableLiveData<ComicState>()
     val state: LiveData<ComicState> = _vm
